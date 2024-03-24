@@ -1,5 +1,5 @@
 <script setup>
-
+import Game from './components/Game.vue';
 </script>
 
 <template>
@@ -7,5 +7,6 @@
   </header>
 
   <main>
+    <Game/>
   </main>
 </template>
