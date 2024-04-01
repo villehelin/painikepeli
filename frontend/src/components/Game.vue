@@ -27,6 +27,15 @@
     created() {
         this.socket = io('http://localhost:3000');
 
+        this.socket.emit('getPlayers');
+
+        this.socket.on('players', (players) => {
+            const player = players.find(player => player.socketId === this.socket.id);
+            if (player) {
+                this.points = player.points;
+            }
+        });
+
         this.socket.on('initialPoints', (points) => {
             this.points = points;
         });

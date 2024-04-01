@@ -12,6 +12,7 @@ const io = socketIo(server, {
 
 count = 0;
 initialPoints = 20;
+let players = [];
 
 io.on('connection', (socket) => {
     console.log("A user connected", socket.id);
@@ -21,13 +22,47 @@ io.on('connection', (socket) => {
     });
 
     socket.emit('initialPoints', initialPoints);
+    players.push({ socketId: socket.id, points: initialPoints });
 
     socket.on('buttonClicked', () => {
-        count++;
+      count++;
+      
+      const player = players.find(player => player.socketId === socket.id);
 
-        console.log("counter: ", count);
-        io.emit('counter', count);
-    });
+      console.log("counter: ", count);
+      io.emit('counter', count, player);
+      
+
+      player.points--;
+
+      if (count % 500 === 0) {
+          if (player) {
+              player.points += 250;
+          }
+          io.emit('players', players);
+      }
+      else if (count % 250 === 0) {
+          if (player) {
+              player.points += 40;
+          }
+          io.emit('players', players);
+      }
+      else if (count % 10 === 0) {
+          if (player) {
+              player.points += 5;
+          }
+          io.emit('players', players);
+      }
+      else
+          io.emit('players', players);
+
+  });
+
+  socket.on('getPlayers', () => {
+    io.emit('players', players);
+  });
+
+
 });
 
 
