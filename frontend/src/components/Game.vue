@@ -15,20 +15,27 @@
 
     </div>
 
+    <Leaderboard :players=players v-if="buttonDisabled"/>
+
     
   </template>
   
   <script>
   import io from 'socket.io-client';
+  import Leaderboard from './Leaderboard.vue';
   
   export default {
+    components: {
+        Leaderboard
+    },
     data() {
       return {
         count: null,
         points: null,
         nextWin: null,
         socketId: null,
-        buttonDisabled: false
+        buttonDisabled: false,
+        players: []
       };
     },
     created() {
@@ -37,10 +44,12 @@
         this.socket.emit('getPlayers');
 
         this.socket.on('players', (players) => {
-            const player = players.find(player => player.socketId === this.socket.id);
-            if (player) {
-                this.points = player.points;
-            }
+          this.players = players;
+
+          const player = players.find(player => player.socketId === this.socket.id);
+          if (player) {
+              this.points = player.points;
+          }
         });
 
         this.socket.on('connect', () => {
