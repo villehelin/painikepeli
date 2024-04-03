@@ -18,7 +18,8 @@ io.on('connection', (socket) => {
     console.log("A user connected", socket.id);
 
     socket.on("disconnect", () => {
-        console.log("User disconnected", socket.id);
+      console.log("User disconnected", socket.id);
+      players = players.filter(player => player.socketId !== socket.id);
     });
 
     socket.emit('initialPoints', initialPoints);
