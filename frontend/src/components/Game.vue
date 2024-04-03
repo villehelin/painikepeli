@@ -7,7 +7,8 @@
       <p>User: {{ socketId }}</p>
 
       <div>
-        <button @click="handleButtonClick" class="button">Paina</button>
+        <button @click="handleButtonClick" :disabled="buttonDisabled">Paina</button>
+        <button @click="resetPoints" v-if="buttonDisabled">Reset Points</button>
       </div>
 
 
@@ -26,7 +27,8 @@
         count: null,
         points: null,
         nextWin: null,
-        socketId: null
+        socketId: null,
+        buttonDisabled: false
       };
     },
     created() {
@@ -56,11 +58,19 @@
             }
         });
 
+        this.socket.on('lose', () => {
+          this.buttonDisabled = true;
+        });
+
     },
     methods: {
       handleButtonClick() {
         this.socket.emit('buttonClicked');
-      }
+      },
+      resetPoints() {
+        this.socket.emit('resetPlayer');
+        this.buttonDisabled = false;
+    }
     }
   };
   </script>

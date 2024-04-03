@@ -54,13 +54,25 @@ io.on('connection', (socket) => {
           io.emit('players', players);
       }
       else
-          io.emit('players', players);
+        io.emit('players', players);
+
+      if (player.points === 0) {
+        io.emit('lose');
+      }
 
   });
 
   socket.on('getPlayers', () => {
     io.emit('players', players);
   });
+
+  socket.on('resetPlayer', () => {
+    const player = players.find(player => player.socketId === socket.id);
+    if (player) {
+        player.points = initialPoints;
+    }
+    io.emit('players', players, socket.id);
+})
 
 
 });
