@@ -63,6 +63,16 @@
       this.socket.on('connect', () => {
         this.socketId = this.socket.id;
       });
+
+      this.socket.on('online', (socketId) => {
+        const message = `${socketId} has joined the game`;
+        store.triggerNotification(message, "lightgreen");
+      });
+
+      this.socket.on('offline', (socketId) => {
+        const message = `${socketId} has left the game`;
+        store.triggerNotification(message, "gray");
+      });
   
       this.socket.on('counter', (count, player) => {
           this.count = count;

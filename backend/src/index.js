@@ -17,9 +17,13 @@ let players = [];
 io.on('connection', (socket) => {
     console.log("A user connected", socket.id);
 
+    io.emit('online', socket.id);
+
     socket.on("disconnect", () => {
       console.log("User disconnected", socket.id);
       players = players.filter(player => player.socketId !== socket.id);
+
+      io.emit('offline', socket.id);
     });
 
     players.push({ socketId: socket.id, points: initialPoints });
