@@ -8,9 +8,9 @@
       <p>Seuraavaan voittoon: {{ nextWin }}</p>
       <p>User: {{ socketId }}</p>
 
-      <div>
-        <button @click="handleButtonClick" :disabled="buttonDisabled">Paina</button>
-        <button @click="resetPoints" v-if="buttonDisabled">Reset Points</button>
+      <div class="button-container">
+        <button @click="handleButtonClick" :disabled="buttonDisabled" class="button">Paina</button>
+        <button @click="resetPoints" v-if="buttonDisabled" class="reset-button">Reset Points</button>
       </div>
 
 
@@ -112,3 +112,51 @@
     }
   };
   </script>
+
+<style>
+#app {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.button[disabled] {
+  background-color: #cccccc;
+}
+
+.button[disabled]:hover {
+  background-color: #cccccc; 
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.reset-button {
+  padding: 10px 20px;
+  background-color: #dc3545; 
+  color: #fff; 
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; 
+}
+
+.reset-button:hover {
+  background-color: #c82333; 
+}
+</style>
