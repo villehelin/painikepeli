@@ -1,7 +1,10 @@
 <template>
     <div>
+      <h1>Multiplayer Game</h1>
       <p>counter: {{ count }}</p>
       <p>Pisteet: {{ points }}</p>
+      <p>Seuraavaan voittoon: {{ nextWin }}</p>
+      <p>User: {{ socketId }}</p>
 
       <div>
         <button @click="handleButtonClick" class="button">Paina</button>
@@ -22,6 +25,8 @@
       return {
         count: null,
         points: null,
+        nextWin: null,
+        socketId: null
       };
     },
     created() {
@@ -34,6 +39,10 @@
             if (player) {
                 this.points = player.points;
             }
+        });
+
+        this.socket.on('connect', () => {
+            this.socketId = this.socket.id;
         });
 
         this.socket.on('initialPoints', (points) => {
