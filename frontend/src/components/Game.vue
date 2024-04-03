@@ -58,8 +58,11 @@
             }
         });
 
-        this.socket.on('lose', () => {
-          this.buttonDisabled = true;
+        this.socket.on('lose', (player) => {
+          if (this.socketId === player.socketId) {
+            this.buttonDisabled = true;
+          }
+          
         });
 
     },

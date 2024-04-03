@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
         io.emit('players', players);
 
       if (player.points === 0) {
-        io.emit('lose');
+        io.emit('lose', player);
       }
 
   });
