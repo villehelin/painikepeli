@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
       players = players.filter(player => player.socketId !== socket.id);
     });
 
-    socket.emit('initialPoints', initialPoints);
+    socket.emit('initialPoints', initialPoints, socket.id);
     players.push({ socketId: socket.id, points: initialPoints });
 
     socket.on('buttonClicked', () => {
@@ -41,18 +41,21 @@ io.on('connection', (socket) => {
               player.points += 250;
           }
           io.emit('players', players);
+          io.emit('win', player, 250);
       }
       else if (count % 250 === 0) {
           if (player) {
               player.points += 40;
           }
           io.emit('players', players);
+          io.emit('win', player, 40);
       }
       else if (count % 10 === 0) {
           if (player) {
               player.points += 5;
           }
           io.emit('players', players);
+          io.emit('win', player, 5);
       }
       else
         io.emit('players', players);

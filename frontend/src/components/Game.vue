@@ -1,4 +1,6 @@
 <template>
+
+    <Notification />
     <div>
       <h1>Multiplayer Game</h1>
       <p>counter: {{ count }}</p>
@@ -15,7 +17,7 @@
 
     </div>
 
-    <Leaderboard :players=players v-if="buttonDisabled"/>
+    <Leaderboard :players=this.players v-if="buttonDisabled"/>
 
     
   </template>
@@ -23,10 +25,14 @@
   <script>
   import io from 'socket.io-client';
   import Leaderboard from './Leaderboard.vue';
+  import Notification from './Notification.vue'
+
+  import { useStore } from '../store/store';
   
   export default {
     components: {
-        Leaderboard
+        Leaderboard,
+        Notification
     },
     data() {
       return {
@@ -39,40 +45,58 @@
       };
     },
     created() {
-        this.socket = io('http://localhost:3000');
+      const store = useStore();
 
-        this.socket.emit('getPlayers');
+      this.socket = io('http://localhost:3000');
 
-        this.socket.on('players', (players) => {
-          this.players = players;
+      this.socket.emit('getPlayers');
 
-          const player = players.find(player => player.socketId === this.socket.id);
-          if (player) {
-              this.points = player.points;
-          }
-        });
+      this.socket.on('players', (players) => {
+        this.players = players;
 
-        this.socket.on('connect', () => {
-            this.socketId = this.socket.id;
-        });
+        const player = players.find(player => player.socketId === this.socket.id);
+        if (player) {
+            this.points = player.points;
+        }
+      });
 
-        this.socket.on('initialPoints', (points) => {
-            this.points = points;
-        });
-    
-        this.socket.on('counter', (count, player) => {
-            this.count = count;
-            if (this.socketId === player.socketId) {
-                this.nextWin = 10 - count % 10;
-            }
-        });
+      this.socket.on('connect', () => {
+        this.socketId = this.socket.id;
+      });
 
-        this.socket.on('lose', (player) => {
+      this.socket.on('initialPoints', (points, socketId) => {
+
+        this.points = points;
+
+        const message = `${socketId} has joined the game`;
+        store.triggerNotification(message, "lightgreen"); 
+      });
+  
+      this.socket.on('counter', (count, player) => {
+          this.count = count;
           if (this.socketId === player.socketId) {
-            this.buttonDisabled = true;
+              this.nextWin = 10 - count % 10;
           }
-          
-        });
+      });
+
+      this.socket.on('lose', (player) => {
+        if (this.socketId === player.socketId) {
+          this.buttonDisabled = true;
+          const message = `Uh-oh! ${player.socketId} lost the game. Keep your spirits up, there's always another chance!`;
+          store.triggerNotification(message, "red"); 
+        }
+        else {
+          const message = `Uh-oh! ${player.socketId} lost the game. Keep your spirits up, there's always another chance!`;
+          store.triggerNotification(message, "yellow"); 
+        }
+      });
+
+      this.socket.on('win', (player, points) => {  
+        if (this.socketId === player.socketId) {
+          const message = `🎉 Congratulations! Your click has earned you ${points} points! 🎉`;
+          store.triggerNotification(message, "green");
+        }
+      });
 
     },
     methods: {
