@@ -10,8 +10,8 @@ const io = socketIo(server, {
   }
 });
 
-count = 0;
-initialPoints = 20;
+let count = 0;
+let initialPoints = 20;
 let players = [];
 
 io.on('connection', (socket) => {
