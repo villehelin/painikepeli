@@ -25,7 +25,7 @@ This is a full stack application containing frontend made with vue and backend m
 
 ## How to run the application
 
-First `git clone` the repository and run these commands in separete command lines
+First `git clone` the repository and run these commands in separate command lines
 
 ```
 cd frontend && npm install && npm run start
