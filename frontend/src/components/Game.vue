@@ -3,9 +3,12 @@
     <Notification />
     <div>
       <h1>Multiplayer Game</h1>
-      <p>counter: {{ count }}</p>
-      <p>Pisteet: {{ points }}</p>
-      <p>Seuraavaan voittoon: {{ nextWin }}</p>
+      <!-- <p>counter: {{ count }}</p> -->
+      <div class="row">
+        <p>Pisteet: {{ points }}</p>
+        <p v-if="nextWin !== null">Seuraavaan voittoon: {{ nextWin }}</p>
+      </div>
+
       <p>User: {{ socketId }}</p>
 
       <div class="button-container">
@@ -49,8 +52,10 @@
 
       this.socket = io('http://localhost:3000');
 
+      //calls players array from backend
       this.socket.emit('getPlayers');
 
+      //sets current player points to be show on client
       this.socket.on('players', (players) => {
         this.players = players;
 
@@ -60,6 +65,7 @@
         }
       });
 
+      //set current used id to client
       this.socket.on('connect', () => {
         this.socketId = this.socket.id;
       });
@@ -74,6 +80,7 @@
         store.triggerNotification(message, "gray");
       });
   
+      //gets counter from backend and sets how many clicks are needed for next win
       this.socket.on('counter', (count, player) => {
           this.count = count;
           if (this.socketId === player.socketId) {
@@ -81,6 +88,7 @@
           }
       });
 
+      //disables button when player has no points
       this.socket.on('lose', (player) => {
         if (this.socketId === player.socketId) {
           this.buttonDisabled = true;
@@ -117,6 +125,16 @@
 #app {
   text-align: center;
   margin-top: 20px;
+}
+
+.row {
+  justify-content: center;
+  display: flex;
+}
+
+.row p {
+  text-align: center;
+  margin-right: 20px;
 }
 
 .button-container {
