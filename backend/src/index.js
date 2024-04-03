@@ -22,7 +22,6 @@ io.on('connection', (socket) => {
       players = players.filter(player => player.socketId !== socket.id);
     });
 
-    socket.emit('initialPoints', initialPoints, socket.id);
     players.push({ socketId: socket.id, points: initialPoints });
 
     socket.on('buttonClicked', () => {

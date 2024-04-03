@@ -63,14 +63,6 @@
       this.socket.on('connect', () => {
         this.socketId = this.socket.id;
       });
-
-      this.socket.on('initialPoints', (points, socketId) => {
-
-        this.points = points;
-
-        const message = `${socketId} has joined the game`;
-        store.triggerNotification(message, "lightgreen"); 
-      });
   
       this.socket.on('counter', (count, player) => {
           this.count = count;
